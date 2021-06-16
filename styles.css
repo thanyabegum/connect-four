@@ -1,0 +1,51 @@
+/* CSS VARIABLES */
+:root {
+    --num-of-cols: 7;
+    --num-of-rows: 6;
+    --space-size: 80px;
+    --board-color: #1d90ff;
+    --primary-color: #ff0102; /* Player 1's checker color */
+    --secondary-color: #ffd800; /* Player 2's checker color */
+}
+
+/* STYLES */
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    color: var(--board-color);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(var(--num-of-cols), 1fr);
+    grid-template-rows: repeat(var(--num-of-rows), 1fr);
+    gap: 1rem;
+    padding: 1.5rem;
+    background-color: var(--board-color);
+    border-radius: 30px;
+}
+
+.space {
+    width: var(--space-size);
+    height: var(--space-size);
+    background-color: white;
+    border-radius: 50%;
+}
+
+.p1-checker {
+    background-color: var(--primary-color);
+}
+
+.p2-checker {
+    background-color: var(--secondary-color);
+}
+
+.grid .space:hover {
+    background-color: orange;
+}

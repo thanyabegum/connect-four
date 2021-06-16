@@ -14,3 +14,25 @@
 - Hovering over column highlights that column, shows checker there
 - Clicking on spot drops checker
 */
+
+// GAME CONSTANTS
+const NUM_OF_COLS = 7; // Number of columns on the game board
+const NUM_OF_ROWS = 6; // Number of rows on the game board
+
+// ELEMENTS
+const newGameBtn = document.querySelector("#new-game"); // New game button
+const board = document.querySelector('#board');
+
+// EVENT LISTENERS
+// When user clicks the new game button, create and display the game board
+newGameBtn.addEventListener('click', () => {
+    newGameBtn.remove();
+
+    for (let i = 0; i < NUM_OF_COLS * NUM_OF_ROWS; i++) {
+        const space = document.createElement("div");
+        space.classList = "space";
+        board.appendChild(space);
+    }
+
+    board.classList = "grid";
+})
