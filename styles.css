@@ -9,6 +9,10 @@
 }
 
 /* STYLES */
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     display: flex;
@@ -21,6 +25,10 @@ h1 {
     color: var(--board-color);
 }
 
+#board {
+    z-index: 0;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(var(--num-of-cols), 1fr);
@@ -31,11 +39,54 @@ h1 {
     border-radius: 30px;
 }
 
+#possible-position {
+    height: var(--space-size);
+    width: var(--space-size);
+    border-radius: 50%;
+    margin: 1rem 0;
+    position: relative;
+    z-index: 1;
+}
+
+.transparent {
+    opacity: 0;
+}
+
+#possible-position.col1 {
+    right: calc((1rem + var(--space-size))*3);
+}
+
+#possible-position.col2 {
+    right: calc((1rem + var(--space-size))*2);
+}
+
+#possible-position.col3 {
+    right: calc(1rem + var(--space-size));
+}
+
+#possible-position.col4 {
+    right: 0;
+}
+
+#possible-position.col5 {
+    left: calc(1rem + var(--space-size));
+}
+
+#possible-position.col6 {
+    left: calc((1rem + var(--space-size))*2);
+}
+
+#possible-position.col7 {
+    left: calc((1rem + var(--space-size))*3);
+}
+
 .space {
     width: var(--space-size);
     height: var(--space-size);
     background-color: white;
     border-radius: 50%;
+    z-index: -1;
+    mix-blend-mode: screen;
 }
 
 .p1-checker {
@@ -44,8 +95,4 @@ h1 {
 
 .p2-checker {
     background-color: var(--secondary-color);
-}
-
-.grid .space:hover {
-    background-color: orange;
 }
