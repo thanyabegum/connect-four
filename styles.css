@@ -6,6 +6,9 @@
     --board-color: #1d90ff;
     --primary-color: #ff0102; /* Player 1's checker color */
     --secondary-color: #ffd800; /* Player 2's checker color */
+    --board-gutter: 16px;
+    --board-padding: 24px;
+    --space-above-board: -100px;
 }
 
 /* STYLES */
@@ -26,58 +29,68 @@ h1 {
 }
 
 #board {
-    z-index: 0;
+    position: relative;
+    margin-top: 8rem;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(var(--num-of-cols), 1fr);
     grid-template-rows: repeat(var(--num-of-rows), 1fr);
-    gap: 1rem;
-    padding: 1.5rem;
+    gap: var(--board-gutter);
+    padding: var(--board-padding);
     background-color: var(--board-color);
     border-radius: 30px;
 }
 
-#possible-position {
+#checkers {
+    position: absolute;
+}
+
+.checker {
     height: var(--space-size);
     width: var(--space-size);
     border-radius: 50%;
-    margin: 1rem 0;
-    position: relative;
-    z-index: 1;
+    position: absolute;
 }
 
 .transparent {
     opacity: 0;
 }
 
-#possible-position.col1 {
-    right: calc((1rem + var(--space-size))*3);
+.checker.col1 {
+    left: var(--board-padding);
+    top: var(--space-above-board);
 }
 
-#possible-position.col2 {
-    right: calc((1rem + var(--space-size))*2);
+.checker.col2 {
+    left: calc(var(--board-padding) + var(--board-gutter) + var(--space-size));
+    top: var(--space-above-board);
 }
 
-#possible-position.col3 {
-    right: calc(1rem + var(--space-size));
+.checker.col3 {
+    left: calc(var(--board-padding) + var(--board-gutter)*2 + var(--space-size)*2);
+    top: var(--space-above-board);
 }
 
-#possible-position.col4 {
-    right: 0;
+.checker.col4 {
+    left: calc(var(--board-padding) + var(--board-gutter)*3 + var(--space-size)*3);
+    top: var(--space-above-board);
 }
 
-#possible-position.col5 {
-    left: calc(1rem + var(--space-size));
+.checker.col5 {
+    left: calc(var(--board-padding) + var(--board-gutter)*4 + var(--space-size)*4);
+    top: var(--space-above-board);
 }
 
-#possible-position.col6 {
-    left: calc((1rem + var(--space-size))*2);
+.checker.col6 {
+    left: calc(var(--board-padding) + var(--board-gutter)*5 + var(--space-size)*5);
+    top: var(--space-above-board);
 }
 
-#possible-position.col7 {
-    left: calc((1rem + var(--space-size))*3);
+.checker.col7 {
+    left: calc(var(--board-padding) + var(--board-gutter)*6 + var(--space-size)*6);
+    top: var(--space-above-board);
 }
 
 .space {
@@ -85,8 +98,6 @@ h1 {
     height: var(--space-size);
     background-color: white;
     border-radius: 50%;
-    z-index: -1;
-    mix-blend-mode: screen;
 }
 
 .p1-checker {
