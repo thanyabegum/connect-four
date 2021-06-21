@@ -2,10 +2,10 @@
 :root {
     --num-of-cols: 7;
     --num-of-rows: 6;
-    --space-size: 80px;
     --board-color: #1d90ff;
     --primary-color: #ff0102; /* Player 1's checker color */
     --secondary-color: #ffd800; /* Player 2's checker color */
+    --space-size: 80px;
     --board-gutter: 16px;
     --board-padding: 24px;
     --space-above-board: -100px;
@@ -52,6 +52,7 @@ h1 {
     width: var(--space-size);
     border-radius: 50%;
     position: absolute;
+    transition: top 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8), left 200ms ease-in;
 }
 
 .transparent {
