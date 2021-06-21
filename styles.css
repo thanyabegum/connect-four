@@ -42,6 +42,7 @@ h1 {
     padding: var(--board-padding);
     background-color: var(--board-color);
     border-radius: 30px;
+    transition: background-color 1s ease-in;
 }
 
 #checkers {

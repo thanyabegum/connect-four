@@ -21,32 +21,30 @@ const checkers = document.querySelector("#checkers");
 let spaces = [];
 
 // EVENT LISTENERS
-// When user clicks the new game button, create and display the game board
-newGameBtn.addEventListener('click', () => {
-    gameStart = true;
-    newGameBtn.remove();
-    document.querySelector("h1").remove();
+// // When user clicks the new game button, create and display the game board
+// newGameBtn.addEventListener('click', () => {
+//     gameStart = true;
 
-    for (let i = 1; i <= NUM_OF_ROWS; i++) {
-        let temp = [];
-        for (let j = 1; j <= NUM_OF_COLS; j++) {
-            const space = document.createElement("div");
-            space.classList = "space";
-            space.id = `${i}-${j}`;
-            board.appendChild(space);
-            temp.push(0);
-        }
-        spaces.push(temp);
-    }
-    console.log(spaces);
+//     for (let i = 1; i <= NUM_OF_ROWS; i++) {
+//         let temp = [];
+//         for (let j = 1; j <= NUM_OF_COLS; j++) {
+//             const space = document.createElement("div");
+//             space.classList = "space";
+//             space.id = `${i}-${j}`;
+//             board.appendChild(space);
+//             temp.push(0);
+//         }
+//         spaces.push(temp);
+//     }
+//     console.log(spaces);
 
-    board.classList = "grid";
+//     board.classList = "grid";
 
-    const newChecker = document.createElement("div");
-    newChecker.className = "checker";
-    newChecker.id = "current-checker"
-    checkers.appendChild(newChecker);
-});
+//     const newChecker = document.createElement("div");
+//     newChecker.className = "checker";
+//     newChecker.id = "current-checker"
+//     checkers.appendChild(newChecker);
+// });
 
 // When user hovers over spaces on the board, display the checker above that column
 board.addEventListener('mouseover', (event) => {
