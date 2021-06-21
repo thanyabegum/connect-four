@@ -1,4 +1,5 @@
 let gameStart = false;
+let gameOver = false;
 let p1Turn = true;
 
 // GAME CONSTANTS
@@ -53,6 +54,8 @@ board.addEventListener('mouseover', (event) => {
     
     if (gameStart && element.className === "space") {
         const currentChecker = document.querySelector("#current-checker");
+        const col = parseInt(element.id[2]) - 1;
+        // currentChecker.style.left = BOARD_PADDING + (BOARD_GUTTER + SPACE_SIZE) * col;
         currentChecker.classList = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
     }
 });
@@ -80,6 +83,7 @@ board.addEventListener('click', (event) => {
                 else spaces[i][col] = 2;
                 if (isWinner(p1Turn ? 1 : 2, i, col)) {
                     alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
+                    reset();
                 };
                 p1Turn = !p1Turn;
                 break;
@@ -89,6 +93,18 @@ board.addEventListener('click', (event) => {
         console.log(spaces);
     }
 });
+
+function reset() {
+    const allCheckers = document.getElementsByClassName("checker");
+    Array.from(allCheckers).forEach(checker => {
+        checker.style.transitionDuration = "1.75s";
+        checker.style.top = "100vh"
+        checker.addEventListener("webkitTransitionEnd", () => {
+            checker.remove();
+        });
+    });
+}
+
 
 // checks if dropping the checker at row, col leads to a four in a row (i.e. a win)
 function isWinner(playerID, row, col) {
