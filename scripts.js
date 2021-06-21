@@ -78,8 +78,10 @@ board.addEventListener('click', (event) => {
 
                 if (p1Turn) spaces[i][col] = 1; // put 1 for player 1 and 2 for player 2
                 else spaces[i][col] = 2;
+                if (isWinner(p1Turn ? 1 : 2, i, col)) {
+                    alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
+                };
                 p1Turn = !p1Turn;
-                checkforWin(i, col);
                 break;
             }
         }
@@ -88,7 +90,50 @@ board.addEventListener('click', (event) => {
     }
 });
 
-// checks if dropping the checker at row, col leads to a win
-function checkforWin(row, col) {
+// checks if dropping the checker at row, col leads to a four in a row (i.e. a win)
+function isWinner(playerID, row, col) {
+    let counter = 0; // number of same colors checkers in the row so far
+    let rowIndex; // row index to check
+    let colIndex; // col index to check
+
+    // checks for vertical win
+    for (let i = 0; i < 7; i++) {
+        rowIndex = row - 3 + i;
+        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
+        if (spaces[rowIndex][col] === playerID) counter++;
+        if (counter === 4) return true;
+    }
+
+    // checks for horizontal win
+    counter = 0; // restart counter
+    for (let i = 0; i < 7; i++) {
+        colIndex = col - 3 + i;
+        if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+        if (spaces[row][colIndex] === playerID) counter++;
+        if (counter === 4) return true;
+    }
     
+    // checks for rising (/) diagonal win
+    counter = 0; // restart counter
+    for (let i = 0; i < 7; i++) {
+        rowIndex = row + 3 - i;
+        colIndex = col - 3 + i;
+        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
+        if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+        if (spaces[rowIndex][colIndex] === playerID) counter++;
+        if (counter === 4) return true;
+    }
+
+    // checks for falling (\) diagonal win 
+    counter = 0; // restart counter
+    for (let i = 0; i < 7; i++) {
+        rowIndex = row - 3 + i;
+        colIndex = col - 3 + i;
+        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
+        if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+        if (spaces[rowIndex][colIndex] === playerID) counter++;
+        if (counter === 4) return true;
+    }
+
+    return false; // if no winner yet, return false
 }
