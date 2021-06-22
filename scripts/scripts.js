@@ -20,31 +20,37 @@ const board = document.querySelector("#board");
 const checkers = document.querySelector("#checkers");
 let spaces = [];
 
+window.addEventListener('DOMContentLoaded', () => {
+    for (let i = 1; i <= NUM_OF_ROWS; i++) {
+        let temp = [];
+        for (let j = 1; j <= NUM_OF_COLS; j++) {
+            const space = document.createElement("div");
+            space.classList = "space";
+            space.id = `${i}-${j}`;
+            board.appendChild(space);
+            temp.push(0);
+        }
+        spaces.push(temp);
+    }
+    console.log(spaces);
+
+    board.classList = "grid";
+
+    startGame();
+});
+
+function startGame() {
+    gameStart = true;
+    const newChecker = document.createElement("div");
+    newChecker.className = "checker";
+    newChecker.id = "current-checker"
+    checkers.appendChild(newChecker);
+}
+
+
 // EVENT LISTENERS
-// // When user clicks the new game button, create and display the game board
-// newGameBtn.addEventListener('click', () => {
-//     gameStart = true;
-
-//     for (let i = 1; i <= NUM_OF_ROWS; i++) {
-//         let temp = [];
-//         for (let j = 1; j <= NUM_OF_COLS; j++) {
-//             const space = document.createElement("div");
-//             space.classList = "space";
-//             space.id = `${i}-${j}`;
-//             board.appendChild(space);
-//             temp.push(0);
-//         }
-//         spaces.push(temp);
-//     }
-//     console.log(spaces);
-
-//     board.classList = "grid";
-
-//     const newChecker = document.createElement("div");
-//     newChecker.className = "checker";
-//     newChecker.id = "current-checker"
-//     checkers.appendChild(newChecker);
-// });
+// When user clicks the new game button, create and display the game board
+newGameBtn.addEventListener('click', reset);
 
 // When user hovers over spaces on the board, display the checker above that column
 board.addEventListener('mouseover', (event) => {
@@ -68,8 +74,9 @@ board.addEventListener('click', (event) => {
         for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
             if (spaces[i][col] === 0) {
                 const currentChecker = document.querySelector("#current-checker");
-                const dropSize = BOARD_PADDING + (BOARD_GUTTER + SPACE_SIZE) * i;
-                currentChecker.style.top = `${dropSize}px`;
+                // `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`
+                const dropSize = BOARD_GUTTER * (2 * i + 1) + SPACE_SIZE * i;
+                currentChecker.style.top = `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`;
 
                 const newChecker = document.createElement("div");
                 newChecker.className = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
@@ -81,7 +88,7 @@ board.addEventListener('click', (event) => {
                 else spaces[i][col] = 2;
                 if (isWinner(p1Turn ? 1 : 2, i, col)) {
                     alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
-                    reset();
+                    gameStart = false;
                 };
                 p1Turn = !p1Turn;
                 break;
@@ -101,6 +108,14 @@ function reset() {
             checker.remove();
         });
     });
+
+    for (let i = 0; i < NUM_OF_ROWS; i++) {
+        for (let j = 0; j < NUM_OF_COLS; j++) {
+            spaces[i][j] = 0;
+        }
+    }
+
+    startGame();
 }
 
 

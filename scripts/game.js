@@ -15,23 +15,27 @@ export default class Game {
         return this._turn;
     }
 
-    get players() {
-        return [this.player1, this.player2];
-    }
-
     get winner() {
         if (this._active) return "No winner";
         return this._winner;
     }
 
+    get newGameBtn() {
+        return document.querySelector("#new-game");
+    }
+
+    // get currentChecker() {
+    //     return document.querySelector("#current-checker");
+    // }
+
     // When user clicks the new game button, create and display the game board
     bindNewGameBtn() {
-        const newGameBtn = document.querySelector("#new-game"); // New game button
-        newGameBtn.addEventListener('click', () => {
+        this.newGameBtn.addEventListener('click', () => {
             this._active = true;
             this._turn = this.player1;
             this.board = new Board(NUM_OF_ROWS, NUM_OF_COLS);
-            this.currentChecker = new Checker(this._turn);
+            this.currentChecker = new Checker(this._turn, 4);
+            // this.currentChecker.html.addClass("fade-in");
         });
     }
 

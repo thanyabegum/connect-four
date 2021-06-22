@@ -1,15 +1,28 @@
 export default class Checker {
-    constructor(owner) {
+    constructor(owner, initialCol) {
         this.owner = owner;
-        this.drawChecker();
+        this.drawChecker(initialCol);
     }
 
-    drawChecker() {
-        const checkers = document.querySelector("#checkers");
+    get checkersContainer() {
+        return document.querySelector("#checkers");
+    }
+
+    drawChecker(col) {
         const newChecker = document.createElement("div");
-        newChecker.className = `checker p${this.owner.id}-checker`;
+        newChecker.className = `checker col${col} p${this.owner.id}-checker`;
         // newChecker.id = "current-checker";
-        checkers.appendChild(newChecker);
+        // newChecker.left = `calc(var(--board-padding) + var(--board-gutter)*2 + var(--space-size)*2)`;
+        // newChecker.top = `var(--space-above-board)`;
+        this.html = newChecker;
+        this.checkersContainer.appendChild(newChecker);
+        if (!newChecker.previousElementSibling) {
+            newChecker.style.opacity = 0;
+        }
+    }
+
+    move(col) {
+
     }
 
     drop(size, callback) {

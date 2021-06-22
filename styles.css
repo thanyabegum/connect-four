@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700;800&display=swap');
+
 /* CSS VARIABLES */
 :root {
     --num-of-cols: 7;
@@ -5,10 +8,11 @@
     --board-color: #1d90ff;
     --primary-color: #ff0102; /* Player 1's checker color */
     --secondary-color: #ffd800; /* Player 2's checker color */
+    --background-color: #222629;
     --space-size: 80px;
-    --board-gutter: 16px;
-    --board-padding: 24px;
-    --space-above-board: -100px;
+    --board-gutter: 10px;
+    --board-padding: 15px;
+    --space-above-board: -110px;
 }
 
 /* STYLES */
@@ -18,35 +22,68 @@
 
 body {
     margin: 0;
+    font-family: 'Alegreya Sans', Helvetica, sans-serif;
+    background-color: var(--background-color);
+}
+
+#wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    margin-top: 9rem;
+}
+
+header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    font-family: Arial, Helvetica, sans-serif;
-    overflow: hidden;
+    align-items: flex-end;
+    text-align: right;
+    line-height: 1;
 }
 
 h1 {
     color: var(--board-color);
+    font-size: 56px;
+    font-weight: 800;
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+button {
+    font-family: 'Alegreya Sans', Helvetica, sans-serif;
+    font-size: 21px;
+    font-weight: bold;
+    color: var(--background-color);
+    background-color: var(--board-color);
+    border-color: var(--board-color);
+    border-radius: 15px;
+    padding: 5px 10px;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 75%;
 }
 
 #board {
     position: relative;
-    margin-top: 8rem;
+    margin-left: 3rem;
 }
 
 .grid {
     display: grid;
     grid-template-columns: repeat(var(--num-of-cols), 1fr);
     grid-template-rows: repeat(var(--num-of-rows), 1fr);
-    gap: var(--board-gutter);
-    padding: var(--board-padding);
-    background-color: var(--board-color);
+    border: solid var(--board-padding) var(--board-color);
     border-radius: 30px;
     transition: background-color 1s ease-in;
 }
 
 #checkers {
     position: absolute;
+    z-index: -1;
 }
 
 .checker {
@@ -54,7 +91,8 @@ h1 {
     width: var(--space-size);
     border-radius: 50%;
     position: absolute;
-    transition: top 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8), 
+    transition: opacity 2s ease-in,
+                top 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8), 
                 left 200ms ease-in,
                 bottom 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8);
 }
@@ -64,45 +102,46 @@ h1 {
 }
 
 .checker.col1 {
-    left: var(--board-padding);
+    left: calc(var(--board-gutter));
     top: var(--space-above-board);
 }
 
 .checker.col2 {
-    left: calc(var(--board-padding) + var(--board-gutter) + var(--space-size));
+    left: calc(var(--board-gutter)*3 + var(--space-size));
     top: var(--space-above-board);
 }
 
 .checker.col3 {
-    left: calc(var(--board-padding) + var(--board-gutter)*2 + var(--space-size)*2);
+    left: calc(var(--board-gutter)*5 + var(--space-size)*2);
     top: var(--space-above-board);
 }
 
 .checker.col4 {
-    left: calc(var(--board-padding) + var(--board-gutter)*3 + var(--space-size)*3);
+    left: calc(var(--board-gutter)*7 + var(--space-size)*3);
     top: var(--space-above-board);
 }
 
 .checker.col5 {
-    left: calc(var(--board-padding) + var(--board-gutter)*4 + var(--space-size)*4);
+    left: calc(var(--board-gutter)*9 + var(--space-size)*4);
     top: var(--space-above-board);
 }
 
 .checker.col6 {
-    left: calc(var(--board-padding) + var(--board-gutter)*5 + var(--space-size)*5);
+    left: calc(var(--board-gutter)*11 + var(--space-size)*5);
     top: var(--space-above-board);
 }
 
 .checker.col7 {
-    left: calc(var(--board-padding) + var(--board-gutter)*6 + var(--space-size)*6);
+    left: calc(var(--board-gutter)*13 + var(--space-size)*6);
     top: var(--space-above-board);
 }
 
 .space {
+    box-sizing: content-box;
     width: var(--space-size);
     height: var(--space-size);
-    background-color: white;
-    border-radius: 50%;
+    background: radial-gradient(circle at center, transparent 71%, var(--board-color) 71%);
+    border: solid var(--board-gutter) var(--board-color);
 }
 
 .p1-checker {
@@ -111,4 +150,8 @@ h1 {
 
 .p2-checker {
     background-color: var(--secondary-color);
+}
+
+.hidden {
+    height: 0;
 }
