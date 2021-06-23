@@ -41,6 +41,7 @@ startGame();
 
 function startGame() {
     gameStart = true;
+    p1Turn = true;
     const newChecker = document.createElement("div");
     newChecker.className = "checker";
     newChecker.id = "current-checker"
@@ -178,55 +179,6 @@ function isWinner(playerID, row, col) {
             counter++;
             if (counter === 4) return true;
         } else counter = 0;
-    }
-
-    return false; // if no winner yet, return false
-}
-
-function checkForWin(playerID, row, col) {
-    let vCounter = 0; // number of same color checkers in vertical row
-    let hCounter = 0; // number of same color checkers in horizontal row
-    let rdCounter = 0; // number of same color checkers in rising diagonal
-    let fdCounter = 0; // number of same color checkers in falling diagonal
-
-    for (let i = 0; i < 7; i++) {
-        // checks for vertical win
-        let rowIndex = row - 3 + i;
-        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS) {
-            if (spaces[rowIndex][col] === playerID) {
-                vCounter++;
-                if (vCounter === 4) return true;
-            } else vCounter = 0;
-        };
-""
-        // checks for horizontal win
-        let colIndex = col - 3 + i;
-        if (colIndex > 0 && colIndex < NUM_OF_COLS) {
-            if (spaces[row][colIndex] === playerID) {
-                hCounter++;
-                if (hCounter === 4) return true;
-            } else hCounter = 0;
-        };
-
-        // checks for rising (/) diagonal win
-        rowIndex = row + 3 - i;
-        colIndex = col - 3 + i;
-        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS && colIndex > 0 && colIndex < NUM_OF_COLS) {
-            if (spaces[rowIndex][colIndex] === playerID) {
-                rdCounter++;
-                if (rdCounter === 4) return true;
-            } else rdCounter = 0;
-        };
-
-        // checks for falling (\) diagonal win 
-        rowIndex = row - 3 + i;
-        colIndex = col - 3 + i;
-        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS && colIndex > 0 && colIndex < NUM_OF_COLS) {
-            if (spaces[rowIndex][colIndex] === playerID) {
-                fdCounter++;
-                if (fdCounter === 4) return true;
-            } else fdCounter = 0;
-        };
     }
 
     return false; // if no winner yet, return false
