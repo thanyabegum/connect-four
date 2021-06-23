@@ -1,5 +1,8 @@
+const NUM_OF_COLS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-cols');
+const NUM_OF_ROWS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-rows');
+
 export default class Board {
-    constructor(rows, cols) {
+    constructor(rows = NUM_OF_ROWS, cols = NUM_OF_COLS) {
         this.spaces = [];
         this.drawBoard(rows, cols);
         console.log(this.spaces);

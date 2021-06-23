@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Roboto:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;700;800&display=swap');
 
-/* CSS VARIABLES */
 :root {
     --num-of-cols: 7;
     --num-of-rows: 6;
@@ -15,7 +13,6 @@
     --space-above-board: -110px;
 }
 
-/* STYLES */
 * {
     box-sizing: border-box;
 }
@@ -24,7 +21,6 @@ body {
     margin: 0;
     font-family: 'Alegreya Sans', Helvetica, sans-serif;
     background-color: var(--background-color);
-    overflow: hidden;
 }
 
 #wrapper {
@@ -33,6 +29,10 @@ body {
     justify-content: center;
     align-items: flex-start;
     margin-top: 9rem;
+}
+
+#overflow-handler {
+    overflow: hidden;
 }
 
 header {
@@ -108,6 +108,7 @@ button:hover {
     width: var(--space-size);
     border-radius: 50%;
     position: absolute;
+    top: var(--space-above-board);
     transition: top 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8), 
                 left 100ms ease-in,
                 bottom 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8);
@@ -115,41 +116,6 @@ button:hover {
 
 .transparent {
     opacity: 0;
-}
-
-.checker.col1 {
-    left: calc(var(--board-gutter));
-    top: var(--space-above-board);
-}
-
-.checker.col2 {
-    left: calc(var(--board-gutter)*3 + var(--space-size));
-    top: var(--space-above-board);
-}
-
-.checker.col3 {
-    left: calc(var(--board-gutter)*5 + var(--space-size)*2);
-    top: var(--space-above-board);
-}
-
-.checker.col4 {
-    left: calc(var(--board-gutter)*7 + var(--space-size)*3);
-    top: var(--space-above-board);
-}
-
-.checker.col5 {
-    left: calc(var(--board-gutter)*9 + var(--space-size)*4);
-    top: var(--space-above-board);
-}
-
-.checker.col6 {
-    left: calc(var(--board-gutter)*11 + var(--space-size)*5);
-    top: var(--space-above-board);
-}
-
-.checker.col7 {
-    left: calc(var(--board-gutter)*13 + var(--space-size)*6);
-    top: var(--space-above-board);
 }
 
 .space {
@@ -160,14 +126,6 @@ button:hover {
     border: solid var(--board-gutter) var(--board-color);
 }
 
-.p1-checker {
-    background-color: var(--primary-color);
-}
-
-.p2-checker {
-    background-color: var(--secondary-color);
-}
-
 .hidden {
     height: 0;
 }
@@ -176,6 +134,7 @@ button:hover {
     #wrapper {
         flex-direction: column;
         align-items: center;
+        margin-top: 4rem;
     }
 
     header {
@@ -183,7 +142,6 @@ button:hover {
     }
 
     #board {
-        margin-top: 8rem;
-        margin-left: 0;
+        margin: 8rem 0 3rem 0;
     }
 }

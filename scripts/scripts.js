@@ -1,59 +1,70 @@
-let gameStart = false;
-let gameOver = false;
-let p1Turn = true;
-
 // GAME CONSTANTS
-const NUM_OF_COLS = getComputedStyle(document.documentElement)
-.getPropertyValue('--num-of-cols'); // Number of columns on the game board
-const NUM_OF_ROWS = getComputedStyle(document.documentElement)
-.getPropertyValue('--num-of-rows');; // Number of rows on the game board
-const SPACE_SIZE = parseInt(getComputedStyle(document.documentElement)
-.getPropertyValue('--space-size'));
-const BOARD_GUTTER = parseInt(getComputedStyle(document.documentElement)
-.getPropertyValue('--board-gutter'));
-const BOARD_PADDING = parseInt(getComputedStyle(document.documentElement)
-.getPropertyValue('--board-padding'));
+const NUM_OF_COLS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-cols'); // Number of columns on the game board
+const NUM_OF_ROWS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-rows');; // Number of rows on the game board
+const P1_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--primary-color'); // Player 1 checker color
+const P2_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--secondary-color');; // Player 2 checker color
 
 // ELEMENTS
 const newGameBtn = document.querySelector("#new-game"); // New game button
 const board = document.querySelector("#board");
 const checkers = document.querySelector("#checkers");
 const msg = document.querySelector("#message");
-
 let spaces = [];
 
-for (let i = 1; i <= NUM_OF_ROWS; i++) {
+// GAME VARIABLES
+let gameActive = false;
+let p1Turn = false;
+
+// Setup the board & start game
+board.className = "grid";
+for (let i = 0; i < NUM_OF_ROWS; i++) {
     let temp = [];
-    for (let j = 1; j <= NUM_OF_COLS; j++) {
+    for (let j = 0; j < NUM_OF_COLS; j++) {
         const space = document.createElement("div");
-        space.classList = "space";
-        space.id = `${i}-${j}`;
+        space.className = "space";
+        space.setAttribute("col", j);
         board.appendChild(space);
         temp.push(0);
     }
     spaces.push(temp);
 }
-console.log(spaces);
-
-board.classList = "grid";
-
 startGame();
 
+// Start game by setting game variables & drawing first checker
 function startGame() {
-    gameStart = true;
+    gameActive = true;
     p1Turn = true;
-    const newChecker = document.createElement("div");
-    newChecker.className = "checker";
-    newChecker.id = "current-checker"
-    checkers.appendChild(newChecker);
+    checkers.appendChild(createChecker());
 }
 
+// Creates new checker
+function createChecker(initCol = 3) {
+    const checker = document.createElement("div");
+    checker.className = "checker";
+    checker.id = "current-checker";
+    checker.setAttribute("tabindex", "0");
+    checker.setAttribute("col", initCol);
+    checker.style.left = `calc(var(--board-gutter) * ${2 * initCol + 1} + var(--space-size) * ${initCol})`;
+    return checker;
+}
 
-// EVENT LISTENERS
-// When user clicks the new game button, create and display the game board
+// When user clicks the new game button, reset the game board & clear winner message
 newGameBtn.addEventListener('click', () => {
-    msg.style.display = "none";
+    reset();
+    startGame();
+});
 
+function reset() {
+    msg.style.display = "none"; // Clear winner message
+
+    // Reset board by setting all spaces to 0
+    for (let i = 0; i < NUM_OF_ROWS; i++) {
+        for (let j = 0; j < NUM_OF_COLS; j++) {
+            spaces[i][j] = 0;
+        }
+    }
+
+    // Drop checkers out of the board, off screen & then delete them
     const allCheckers = document.getElementsByClassName("checker");
     Array.from(allCheckers).forEach(checker => {
         checker.removeAttribute("id");
@@ -63,73 +74,104 @@ newGameBtn.addEventListener('click', () => {
             checker.remove();
         });
     });
-
-    for (let i = 0; i < NUM_OF_ROWS; i++) {
-        for (let j = 0; j < NUM_OF_COLS; j++) {
-            spaces[i][j] = 0;
-        }
-    }
-
-    startGame();
-});
+}
 
 // When user hovers over spaces on the board, display the checker above that column
 board.addEventListener('mouseover', (event) => {
-    const element = event.target;
-    
-    if (gameStart && element.className === "space") {
+    if (gameActive && event.target.className === "space") {
         const currentChecker = document.querySelector("#current-checker");
-        // const col = parseInt(element.id[2]) - 1;
-        // currentChecker.style.left = BOARD_PADDING + (BOARD_GUTTER + SPACE_SIZE) * col;
-        currentChecker.classList = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
+        const newCol = parseInt(event.target.getAttribute("col"));
+        const oldCol = parseInt(currentChecker.getAttribute("col"));
+        moveChecker(newCol - oldCol);
+        showChecker();
     }
 });
+
+function showChecker(col) {
+    const currentChecker = document.querySelector("#current-checker");
+    currentChecker.style.backgroundColor = `${p1Turn ? P1_COLOR : P2_COLOR}`;
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.code === "KeyN") {
+        reset();
+        startGame();
+    }
+
+    if (gameActive) {
+        switch (event.code) {
+            case "ArrowLeft":
+                showChecker();
+                moveChecker(-1);
+                break;
+            case "ArrowRight":
+                showChecker();
+                moveChecker(1);
+                break;
+            case "ArrowDown":
+                const colToDrop = document.querySelector("#current-checker").getAttribute("col");
+                dropChecker(colToDrop);
+                break;
+        }
+    }
+})
+
+function moveChecker(colsToMoveBy) {    
+    const currentChecker = document.querySelector("#current-checker");
+    const finalCol = parseInt(currentChecker.getAttribute("col")) + colsToMoveBy;
+    if (finalCol >= 0 && finalCol < NUM_OF_COLS) {
+        currentChecker.style.left = `calc(var(--board-gutter) * ${2 * finalCol + 1} + var(--space-size) * ${finalCol})`;
+        currentChecker.setAttribute("col", finalCol)
+    }
+}
 
 // When user clicks on the board, drop the checker
 board.addEventListener('click', (event) => {
-    const element = event.target;
-    
-    if (gameStart && element.className === "space") {
-        const currentChecker = document.querySelector("#current-checker");
-        currentChecker.classList = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
-
-        // const row = parseInt(element.id[0]) - 1;
-        const col = parseInt(element.id[2]) - 1;
-        for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
-            if (spaces[i][col] === 0) {
-                const currentChecker = document.querySelector("#current-checker");
-                currentChecker.style.top = `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`;
-
-                if (p1Turn) spaces[i][col] = 1; // put 1 for player 1 and 2 for player 2
-                else spaces[i][col] = 2;
-
-                if (isWinner(p1Turn ? 1 : 2, i, col)) {
-                    gameStart = false;
-                        msg.innerHTML = `${p1Turn ? "Player 1" : "Player 2"} won!<span id="close">&times;</span>`;
-                        msg.style.display = "block";
-                        const closeBtn = document.querySelector("#close")
-                        closeBtn.addEventListener('click', () => {
-                            msg.style.display = "none";
-                        })
-                } else {
-                    p1Turn = !p1Turn;
-
-                    const newChecker = document.createElement("div");
-                    newChecker.className = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
-                    newChecker.id = currentChecker.id;
-                    checkers.appendChild(newChecker);
-                    currentChecker.removeAttribute("id");
-                }
-                break;
-            }
-        }
-
-        console.log(spaces);
+    if (gameActive && event.target.className === "space") {
+        const col = parseInt(event.target.getAttribute("col"));
+        dropChecker(col);
     }
 });
 
-// checks if dropping the checker at row, col leads to a four in a row (i.e. a win)
-function isWinner(playerID, row, col) {
+function dropChecker(col) {
+    col = parseInt(col);
+    for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
+        if (spaces[i][col] === 0) {
+            // drops the checker
+            const currentChecker = document.querySelector("#current-checker");
+            currentChecker.style.top = `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`;
+
+            // marks the corresponding space in the spaces array
+            if (p1Turn) spaces[i][col] = 1; // put 1 for player 1 and 2 for player 2
+            else spaces[i][col] = 2;
+
+            // checks if there is a winner
+            if (checkForWinner(i, col)) { // if there is, then game over & show winner message
+                gameActive = false;
+                showMessage();
+            } else { // if there isn't, switch turns & show next player's checker
+                p1Turn = !p1Turn;
+                currentChecker.removeAttribute("id");
+                checkers.appendChild(createChecker(col));
+                showChecker();
+            }
+            break;
+        }
+    }
+}
+
+function showMessage() {
+    msg.innerHTML = `${p1Turn ? "Player 1" : "Player 2"} won!<span id="close">&times;</span>`;
+    msg.style.display = "block";
+    const closeBtn = document.querySelector("#close")
+    closeBtn.addEventListener('click', () => {
+        msg.style.display = "none";
+    })
+}
+
+// checks if dropping the checker at (row, col) leads to a four in a row (i.e. a win)
+function checkForWinner(row, col) {
+    const playerID = p1Turn ? 1 : 2;
     let counter = 0; // number of same color checkers in the row so far
     let rowIndex; // row index to check
     let colIndex; // col index to check
@@ -160,8 +202,7 @@ function isWinner(playerID, row, col) {
     for (let i = 0; i < 7; i++) {
         rowIndex = row + 3 - i;
         colIndex = col - 3 + i;
-        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
-        if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1 || colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
         if (spaces[rowIndex][colIndex] === playerID) {
             counter++;
             if (counter === 4) return true;
@@ -173,8 +214,7 @@ function isWinner(playerID, row, col) {
     for (let i = 0; i < 7; i++) {
         rowIndex = row - 3 + i;
         colIndex = col - 3 + i;
-        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
-        if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+        if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1 || colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
         if (spaces[rowIndex][colIndex] === playerID) {
             counter++;
             if (counter === 4) return true;

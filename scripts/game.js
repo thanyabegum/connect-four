@@ -1,16 +1,13 @@
 import Board from './board.js'
 import Checker from './checker.js';
 
-const NUM_OF_COLS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-cols');
-const NUM_OF_ROWS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-rows');
-
 export default class Game {
     constructor(player1, player2) {
         this.player1 = player1;
         this.player2 = player2;
         this._active = true;
         this._turn = this.player1;
-        this.board = new Board(NUM_OF_ROWS, NUM_OF_COLS);
+        this.board = new Board();
         this.currentChecker = new Checker(this._turn, 4);
         this.bindNewGameBtn();
     }
