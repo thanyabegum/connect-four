@@ -50,7 +50,27 @@ function startGame() {
 
 // EVENT LISTENERS
 // When user clicks the new game button, create and display the game board
-newGameBtn.addEventListener('click', reset);
+newGameBtn.addEventListener('click', () => {
+    msg.style.display = "none";
+
+    const allCheckers = document.getElementsByClassName("checker");
+    Array.from(allCheckers).forEach(checker => {
+        checker.removeAttribute("id");
+        checker.style.transitionDuration = "1.75s";
+        checker.style.top = "100vh"
+        checker.addEventListener("webkitTransitionEnd", () => {
+            checker.remove();
+        });
+    });
+
+    for (let i = 0; i < NUM_OF_ROWS; i++) {
+        for (let j = 0; j < NUM_OF_COLS; j++) {
+            spaces[i][j] = 0;
+        }
+    }
+
+    startGame();
+});
 
 // When user hovers over spaces on the board, display the checker above that column
 board.addEventListener('mouseover', (event) => {
@@ -106,29 +126,6 @@ board.addEventListener('click', (event) => {
         console.log(spaces);
     }
 });
-
-function reset() {
-    msg.style.display = "none";
-
-    const allCheckers = document.getElementsByClassName("checker");
-    Array.from(allCheckers).forEach(checker => {
-        checker.removeAttribute("id");
-        checker.style.transitionDuration = "1.75s";
-        checker.style.top = "100vh"
-        checker.addEventListener("webkitTransitionEnd", () => {
-            checker.remove();
-        });
-    });
-
-    for (let i = 0; i < NUM_OF_ROWS; i++) {
-        for (let j = 0; j < NUM_OF_COLS; j++) {
-            spaces[i][j] = 0;
-        }
-    }
-
-    startGame();
-}
-
 
 // checks if dropping the checker at row, col leads to a four in a row (i.e. a win)
 function isWinner(playerID, row, col) {
