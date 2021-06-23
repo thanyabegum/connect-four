@@ -68,6 +68,23 @@ button:hover {
     opacity: 75%;
 }
 
+#message {
+    font-size: 21px;
+    display: none;
+    margin-top: 2rem;
+    padding: 8px 12px;
+    border: solid 2px #eecdc5;
+    border-radius: 10px;
+    background-color: #fcede9;
+}
+
+#close {
+    font-size: 28px;
+    margin-left: 1rem;
+    color: #6a737c;
+    cursor: pointer;
+}
+
 #board {
     position: relative;
     margin-left: 3rem;

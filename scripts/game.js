@@ -8,6 +8,10 @@ export default class Game {
     constructor(player1, player2) {
         this.player1 = player1;
         this.player2 = player2;
+        this._active = true;
+        this._turn = this.player1;
+        this.board = new Board(NUM_OF_ROWS, NUM_OF_COLS);
+        this.currentChecker = new Checker(this._turn, 4);
         this.bindNewGameBtn();
     }
 
@@ -31,11 +35,7 @@ export default class Game {
     // When user clicks the new game button, create and display the game board
     bindNewGameBtn() {
         this.newGameBtn.addEventListener('click', () => {
-            this._active = true;
-            this._turn = this.player1;
-            this.board = new Board(NUM_OF_ROWS, NUM_OF_COLS);
-            this.currentChecker = new Checker(this._turn, 4);
-            // this.currentChecker.html.addClass("fade-in");
+
         });
     }
 

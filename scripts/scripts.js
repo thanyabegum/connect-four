@@ -18,26 +18,26 @@ const BOARD_PADDING = parseInt(getComputedStyle(document.documentElement)
 const newGameBtn = document.querySelector("#new-game"); // New game button
 const board = document.querySelector("#board");
 const checkers = document.querySelector("#checkers");
+const msg = document.querySelector("#message");
+
 let spaces = [];
 
-window.addEventListener('DOMContentLoaded', () => {
-    for (let i = 1; i <= NUM_OF_ROWS; i++) {
-        let temp = [];
-        for (let j = 1; j <= NUM_OF_COLS; j++) {
-            const space = document.createElement("div");
-            space.classList = "space";
-            space.id = `${i}-${j}`;
-            board.appendChild(space);
-            temp.push(0);
-        }
-        spaces.push(temp);
+for (let i = 1; i <= NUM_OF_ROWS; i++) {
+    let temp = [];
+    for (let j = 1; j <= NUM_OF_COLS; j++) {
+        const space = document.createElement("div");
+        space.classList = "space";
+        space.id = `${i}-${j}`;
+        board.appendChild(space);
+        temp.push(0);
     }
-    console.log(spaces);
+    spaces.push(temp);
+}
+console.log(spaces);
 
-    board.classList = "grid";
+board.classList = "grid";
 
-    startGame();
-});
+startGame();
 
 function startGame() {
     gameStart = true;
@@ -77,18 +77,19 @@ board.addEventListener('click', (event) => {
         for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
             if (spaces[i][col] === 0) {
                 const currentChecker = document.querySelector("#current-checker");
-                // `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`
-                const dropSize = BOARD_GUTTER * (2 * i + 1) + SPACE_SIZE * i;
                 currentChecker.style.top = `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`;
 
                 if (p1Turn) spaces[i][col] = 1; // put 1 for player 1 and 2 for player 2
                 else spaces[i][col] = 2;
 
-                if (checkForWin(p1Turn ? 1 : 2, i, col)) {
+                if (isWinner(p1Turn ? 1 : 2, i, col)) {
                     gameStart = false;
-                    setTimeout(() => {
-                        alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
-                    }, 560);
+                        msg.innerHTML = `${p1Turn ? "Player 1" : "Player 2"} won!<span id="close">&times;</span>`;
+                        msg.style.display = "block";
+                        const closeBtn = document.querySelector("#close")
+                        closeBtn.addEventListener('click', () => {
+                            msg.style.display = "none";
+                        })
                 } else {
                     p1Turn = !p1Turn;
 
@@ -107,6 +108,8 @@ board.addEventListener('click', (event) => {
 });
 
 function reset() {
+    msg.style.display = "none";
+
     const allCheckers = document.getElementsByClassName("checker");
     Array.from(allCheckers).forEach(checker => {
         checker.removeAttribute("id");
@@ -198,7 +201,7 @@ function checkForWin(playerID, row, col) {
                 if (vCounter === 4) return true;
             } else vCounter = 0;
         };
-
+""
         // checks for horizontal win
         let colIndex = col - 3 + i;
         if (colIndex > 0 && colIndex < NUM_OF_COLS) {
