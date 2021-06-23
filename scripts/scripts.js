@@ -58,7 +58,7 @@ board.addEventListener('mouseover', (event) => {
     
     if (gameStart && element.className === "space") {
         const currentChecker = document.querySelector("#current-checker");
-        const col = parseInt(element.id[2]) - 1;
+        // const col = parseInt(element.id[2]) - 1;
         // currentChecker.style.left = BOARD_PADDING + (BOARD_GUTTER + SPACE_SIZE) * col;
         currentChecker.classList = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
     }
@@ -69,6 +69,9 @@ board.addEventListener('click', (event) => {
     const element = event.target;
     
     if (gameStart && element.className === "space") {
+        const currentChecker = document.querySelector("#current-checker");
+        currentChecker.classList = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
+
         // const row = parseInt(element.id[0]) - 1;
         const col = parseInt(element.id[2]) - 1;
         for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
@@ -78,19 +81,23 @@ board.addEventListener('click', (event) => {
                 const dropSize = BOARD_GUTTER * (2 * i + 1) + SPACE_SIZE * i;
                 currentChecker.style.top = `calc(var(--board-gutter) * ${2 * i + 1} + var(--space-size) * ${i})`;
 
-                const newChecker = document.createElement("div");
-                newChecker.className = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
-                newChecker.id = currentChecker.id;
-                checkers.appendChild(newChecker);
-                currentChecker.removeAttribute("id");
-
                 if (p1Turn) spaces[i][col] = 1; // put 1 for player 1 and 2 for player 2
                 else spaces[i][col] = 2;
-                if (isWinner(p1Turn ? 1 : 2, i, col)) {
-                    alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
+
+                if (checkForWin(p1Turn ? 1 : 2, i, col)) {
                     gameStart = false;
-                };
-                p1Turn = !p1Turn;
+                    setTimeout(() => {
+                        alert(`${p1Turn ? "Player 1" : "Player 2"} won!`);
+                    }, 560);
+                } else {
+                    p1Turn = !p1Turn;
+
+                    const newChecker = document.createElement("div");
+                    newChecker.className = `checker col${element.id[2]} ${p1Turn ? "p1-checker" : "p2-checker"}`;
+                    newChecker.id = currentChecker.id;
+                    checkers.appendChild(newChecker);
+                    currentChecker.removeAttribute("id");
+                }
                 break;
             }
         }
@@ -102,6 +109,7 @@ board.addEventListener('click', (event) => {
 function reset() {
     const allCheckers = document.getElementsByClassName("checker");
     Array.from(allCheckers).forEach(checker => {
+        checker.removeAttribute("id");
         checker.style.transitionDuration = "1.75s";
         checker.style.top = "100vh"
         checker.addEventListener("webkitTransitionEnd", () => {
@@ -121,7 +129,7 @@ function reset() {
 
 // checks if dropping the checker at row, col leads to a four in a row (i.e. a win)
 function isWinner(playerID, row, col) {
-    let counter = 0; // number of same colors checkers in the row so far
+    let counter = 0; // number of same color checkers in the row so far
     let rowIndex; // row index to check
     let colIndex; // col index to check
 
@@ -129,8 +137,10 @@ function isWinner(playerID, row, col) {
     for (let i = 0; i < 7; i++) {
         rowIndex = row - 3 + i;
         if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
-        if (spaces[rowIndex][col] === playerID) counter++;
-        if (counter === 4) return true;
+        if (spaces[rowIndex][col] === playerID) {
+            counter++;
+            if (counter === 4) return true;
+        } else counter = 0;
     }
 
     // checks for horizontal win
@@ -138,8 +148,10 @@ function isWinner(playerID, row, col) {
     for (let i = 0; i < 7; i++) {
         colIndex = col - 3 + i;
         if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
-        if (spaces[row][colIndex] === playerID) counter++;
-        if (counter === 4) return true;
+        if (spaces[row][colIndex] === playerID) {
+            counter++;
+            if (counter === 4) return true;
+        } else counter = 0;
     }
     
     // checks for rising (/) diagonal win
@@ -149,8 +161,10 @@ function isWinner(playerID, row, col) {
         colIndex = col - 3 + i;
         if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
         if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
-        if (spaces[rowIndex][colIndex] === playerID) counter++;
-        if (counter === 4) return true;
+        if (spaces[rowIndex][colIndex] === playerID) {
+            counter++;
+            if (counter === 4) return true;
+        } else counter = 0;
     }
 
     // checks for falling (\) diagonal win 
@@ -160,8 +174,59 @@ function isWinner(playerID, row, col) {
         colIndex = col - 3 + i;
         if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
         if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
-        if (spaces[rowIndex][colIndex] === playerID) counter++;
-        if (counter === 4) return true;
+        if (spaces[rowIndex][colIndex] === playerID) {
+            counter++;
+            if (counter === 4) return true;
+        } else counter = 0;
+    }
+
+    return false; // if no winner yet, return false
+}
+
+function checkForWin(playerID, row, col) {
+    let vCounter = 0; // number of same color checkers in vertical row
+    let hCounter = 0; // number of same color checkers in horizontal row
+    let rdCounter = 0; // number of same color checkers in rising diagonal
+    let fdCounter = 0; // number of same color checkers in falling diagonal
+
+    for (let i = 0; i < 7; i++) {
+        // checks for vertical win
+        let rowIndex = row - 3 + i;
+        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS) {
+            if (spaces[rowIndex][col] === playerID) {
+                vCounter++;
+                if (vCounter === 4) return true;
+            } else vCounter = 0;
+        };
+
+        // checks for horizontal win
+        let colIndex = col - 3 + i;
+        if (colIndex > 0 && colIndex < NUM_OF_COLS) {
+            if (spaces[row][colIndex] === playerID) {
+                hCounter++;
+                if (hCounter === 4) return true;
+            } else hCounter = 0;
+        };
+
+        // checks for rising (/) diagonal win
+        rowIndex = row + 3 - i;
+        colIndex = col - 3 + i;
+        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS && colIndex > 0 && colIndex < NUM_OF_COLS) {
+            if (spaces[rowIndex][colIndex] === playerID) {
+                rdCounter++;
+                if (rdCounter === 4) return true;
+            } else rdCounter = 0;
+        };
+
+        // checks for falling (\) diagonal win 
+        rowIndex = row - 3 + i;
+        colIndex = col - 3 + i;
+        if (rowIndex > 0 && rowIndex < NUM_OF_ROWS && colIndex > 0 && colIndex < NUM_OF_COLS) {
+            if (spaces[rowIndex][colIndex] === playerID) {
+                fdCounter++;
+                if (fdCounter === 4) return true;
+            } else fdCounter = 0;
+        };
     }
 
     return false; // if no winner yet, return false
