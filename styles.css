@@ -115,20 +115,12 @@ button:hover {
                 bottom 550ms cubic-bezier(0.35, 1.54, 0.41, 0.8);
 }
 
-.transparent {
-    opacity: 0;
-}
-
 .space {
     box-sizing: content-box;
     width: var(--space-size);
     height: var(--space-size);
     background: radial-gradient(circle at center, transparent 71%, var(--board-color) 71%);
     border: solid var(--board-gutter) var(--board-color);
-}
-
-.hidden {
-    height: 0;
 }
 
 @media (max-width: 1024px) {
