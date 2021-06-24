@@ -35,6 +35,7 @@ function startGame() {
     gameActive = true;
     p1Turn = true;
     checkers.appendChild(createChecker());
+    showChecker();
 }
 
 // Creates new checker

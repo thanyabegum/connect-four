@@ -23,16 +23,17 @@ body {
     background-color: var(--background-color);
 }
 
+#overflow-handler {
+    overflow: hidden;
+}
+
 #wrapper {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
     margin-top: 9rem;
-}
-
-#overflow-handler {
-    overflow: hidden;
+    margin-bottom: calc(100vh - 9rem - 630px);
 }
 
 header {
@@ -48,7 +49,7 @@ h1 {
     font-size: 56px;
     font-weight: 800;
     margin-top: 0;
-    margin-bottom: 0.75rem;
+    margin-bottom: 12px;
 }
 
 button {
@@ -135,6 +136,7 @@ button:hover {
         flex-direction: column;
         align-items: center;
         margin-top: 4rem;
+        margin-bottom: calc(100vh - 12rem - 737px);
     }
 
     header {
@@ -142,6 +144,6 @@ button:hover {
     }
 
     #board {
-        margin: 8rem 0 3rem 0;
+        margin: 8rem 0 0 0;
     }
 }
