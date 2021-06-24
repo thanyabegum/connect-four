@@ -88,7 +88,7 @@ board.addEventListener('mouseover', (event) => {
     }
 });
 
-function showChecker(col) {
+function showChecker() {
     const currentChecker = document.querySelector("#current-checker");
     currentChecker.style.backgroundColor = `${p1Turn ? P1_COLOR : P2_COLOR}`;
 }

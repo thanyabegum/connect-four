@@ -1,10 +1,9 @@
-const NUM_OF_COLS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-cols');
-const NUM_OF_ROWS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-rows');
-
 export default class Board {
-    constructor(rows = NUM_OF_ROWS, cols = NUM_OF_COLS) {
+    constructor(rows, cols) {
+        this.rows = rows;
+        this.cols = cols;
         this.spaces = [];
-        this.drawBoard(rows, cols);
+        this.drawBoard();
         console.log(this.spaces);
     }
 
@@ -12,20 +11,33 @@ export default class Board {
         return document.querySelector("#board");
     }
 
-    drawBoard(rows, cols) {
-        for (let i = 1; i <= rows; i++) {
+    drawBoard() {
+        this.board.className = "grid";
+        for (let i = 0; i < this.rows; i++) {
             let temp = [];
-            for (let j = 1; j <= cols; j++) {
-                this.board.insertAdjacentHTML('beforeend', this.createSpaceHTML(i, j));
+            for (let j = 0; j < this.cols; j++) {
+                this.board.insertAdjacentHTML('beforeend', `<div class="space" col="${j}"></div>`);
                 temp.push(0);
             }
             this.spaces.push(temp);
-        }    
-        this.board.className = "grid fade-in";
+        }
     }
 
-    createSpaceHTML(i, j) {
-        return `<div id="${i}-${j}" class="space"></div>`
+    reset() {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.cols; j++) {
+                this.spaces[i][j] = 0;
+            }
+        }
+        console.log(this.spaces);
+    }
+
+    mark(row, col, playerID) {
+        this.spaces[row][col] = playerID;
+    }
+
+    check(row, col, value) {
+        return this.spaces[row][col] === value;
     }
 }
 
