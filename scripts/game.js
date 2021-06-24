@@ -1,13 +1,10 @@
 import Board from './board.js'
 import Checker from './checker.js';
 
-const NUM_OF_COLS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-cols');
-const NUM_OF_ROWS = getComputedStyle(document.documentElement).getPropertyValue('--num-of-rows');
-
 export default class Game {
-    constructor(player1, player2) {
-        this.players = [player1, player2];
-        this.board = new Board(NUM_OF_ROWS, NUM_OF_COLS);
+    constructor(players) {
+        this.players = players;
+        this.board = new Board();
         this.startGame();
         this.bindNewGameBtn();
         this.bindMouseOver();
@@ -15,6 +12,7 @@ export default class Game {
         this.bindKeys();
     }
 
+    // starts game by setting game variables and drawing first checker
     startGame() {
         this.active = true;
         this.turn = this.players[0];
@@ -25,34 +23,37 @@ export default class Game {
         return document.querySelector("#new-game");
     }
 
+    get message() {
+        return document.querySelector("#message");
+    }
+
+    // when user clicks on the new game button, reset the game
     bindNewGameBtn() {
         this.newGameBtn.addEventListener('click', () => {
             this.reset();
         });
     }
 
-    get message() {
-        return document.querySelector("#message");
-    }
-
     get allCheckers() {
         return Array.from(document.getElementsByClassName("checker"));
     }
 
+    // resets the game by hiding the winner message, clearing the board, and removing all used checkers
     reset() {
         this.message.style.display = "none";
         this.board.reset();
         this.allCheckers.forEach(checker => {
-            checker.removeAttribute("id");
+            checker.removeAttribute("tabindex");
             checker.style.transitionDuration = "1.75s";
-            checker.style.top = "100vh"
+            checker.style.top = "100vh" // drops checker off screen
             checker.addEventListener("webkitTransitionEnd", () => {
-                checker.remove();
+                checker.remove(); // deletes the checker
             });
         });
         this.startGame();
     }
 
+    // when user hovers over spaces on the board, display the checker above that column
     bindMouseOver() {
         board.addEventListener('mouseover', (event) => {
             if (this.active && event.target.className === "space") {
@@ -63,6 +64,7 @@ export default class Game {
         });
     }
 
+    // when user clicks on the board, drop the checker in that column
     bindMouseClick() {
         board.addEventListener('click', (event) => {
             if (this.active && event.target.className === "space") {
@@ -72,14 +74,17 @@ export default class Game {
         });
     }
 
+    // finds the first empty space in col column, marks it, drops the checker, and then checks if that wins the game
+    // if it wins the game, then game over. if not, then switches turn and shows next player's checker
     markAndDrop(col) {
-        for (let i = NUM_OF_ROWS - 1; i >= 0; i--) {
+        for (let i = this.board.rows - 1; i >= 0; i--) {
             if (this.board.check(i, col, 0)) {
                 this.currentChecker.drop(i);
                 this.board.mark(i, col, this.turn.id)
     
-                if (this.checkForWinner(i, col)) this.gameOver();
-                else {
+                if (this.checkForWinner(i, col)) {
+                    this.gameOver();
+                } else {
                     this.switchTurn();
                     this.currentChecker = new Checker(this.turn, col);
                 }
@@ -88,12 +93,16 @@ export default class Game {
         }
     }
 
+    // switches turn
     switchTurn() {
-        if (this.turn === this.players[0]) this.turn = this.players[1];
-        else this.turn = this.players[0];
+        if (this.turn === this.players[0]) {
+            this.turn = this.players[1];
+        } else this.turn = this.players[0];
     }
 
-    checkForWinner(col, row) {
+    // returns true if dropping the checker at (row, col) leads to a four in a row (i.e. a win)
+    // returns false otherwise
+    checkForWinner(row, col) {
         const playerID = this.turn.id;
         let counter = 0; // number of same color checkers in the row so far
         let rowIndex; // row index to check
@@ -102,10 +111,10 @@ export default class Game {
         // checks for vertical win
         for (let i = 0; i < 7; i++) {
             rowIndex = row - 3 + i;
-            if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1) continue;
+            if (rowIndex < 0 || rowIndex > this.board.rows - 1) continue;
             if (this.board.check(rowIndex, col, playerID)) {
                 counter++;
-                if (counter === 4) return true;
+                if (counter === 4) return true; // if there is a winner, return true
             } else counter = 0;
         }
     
@@ -113,7 +122,7 @@ export default class Game {
         counter = 0; // restart counter
         for (let i = 0; i < 7; i++) {
             colIndex = col - 3 + i;
-            if (colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+            if (colIndex < 0 || colIndex > this.board.cols - 1) continue;
             if (this.board.check(row, colIndex, playerID)) {
                 counter++;
                 if (counter === 4) return true;
@@ -121,11 +130,11 @@ export default class Game {
         }
         
         // checks for rising (/) diagonal win
-        counter = 0; // restart counter
+        counter = 0;
         for (let i = 0; i < 7; i++) {
             rowIndex = row + 3 - i;
             colIndex = col - 3 + i;
-            if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1 || colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+            if (rowIndex < 0 || rowIndex > this.board.rows - 1 || colIndex < 0 || colIndex > this.board.cols - 1) continue;
             if (this.board.check(rowIndex, colIndex, playerID)) {
                 counter++;
                 if (counter === 4) return true;
@@ -133,11 +142,11 @@ export default class Game {
         }
     
         // checks for falling (\) diagonal win 
-        counter = 0; // restart counter
+        counter = 0; 
         for (let i = 0; i < 7; i++) {
             rowIndex = row - 3 + i;
             colIndex = col - 3 + i;
-            if (rowIndex < 0 || rowIndex > NUM_OF_ROWS - 1 || colIndex < 0 || colIndex > NUM_OF_COLS - 1) continue;
+            if (rowIndex < 0 || rowIndex > this.board.rows - 1 || colIndex < 0 || colIndex > this.board.cols - 1) continue;
             if (this.board.check(rowIndex, colIndex, playerID)) {
                 counter++;
                 if (counter === 4) return true;
@@ -147,19 +156,25 @@ export default class Game {
         return false; // if no winner yet, return false
     }
 
-    gameOver() {
-        this.active = false;
-        this.message.innerHTML = `${this.turn.name} won!<span id="close">&times;</span>`;
-        this.message.style.display = "block";
-        this.closeBtn.addEventListener('click', () => {
-            this.message.style.display = "none";
-        })
-    }
-
     get closeBtn() {
         return document.querySelector("#close");
     }
 
+    // ends game and displays message with winner's name
+    gameOver() {
+        this.active = false;
+        this.message.innerHTML = `${this.turn.name} won!<span id="close" tabindex="0">&times;</span>`;
+        this.message.style.display = "block";
+        this.closeBtn.addEventListener('click', () => {
+            this.message.style.display = "none";
+        })
+        this.closeBtn.addEventListener('keydown', (event) => {
+            if (event.code === "Enter") this.message.style.display = "none";
+        })
+    }
+
+    // when user uses the arrow keys to move the checker, execute the corresponding motion
+    // when user taps N key, resets game
     bindKeys() {
         document.addEventListener('keydown', (event) => {
             if (event.code === "KeyN") this.reset();
